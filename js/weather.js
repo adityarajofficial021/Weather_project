@@ -10,14 +10,18 @@ async function getWeather(city) {
     document.getElementById("city").textContent =
     `City: ${data.name}`;
 
+    const tempC = Math.round(data.main.temp);
+
     document.getElementById("temperature").textContent =
-    `Temperature: ${data.main.temp}°C`;
+    `Temperature: ${tempC}°C`;
 
     document.getElementById("humidity").textContent =
     `Humidity: ${data.main.humidity}%`;
 
+    const windSpeed = Math.round(data.wind.speed);
+
     document.getElementById("wind").textContent =
-    `Wind Speed: ${data.wind.speed} km/h`;
+    `Wind Speed: ${windSpeed} km/h`;
 
     document.getElementById("condition").textContent =
     `Condition: ${data.weather[0].main}`;
