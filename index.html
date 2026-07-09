@@ -1,1 +1,184 @@
+
 <h1>LeapX Project 3</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a1a">
+<meta name="description" content="Atmosfera — feel the sky before you read it. Immersive weather and news.">
+<title>Atmosfera — Feel the Sky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body data-theme="night">
+
+<!-- SKIP LINK-->
+<a href="#news-section" class="sr-only" style="position:fixed;top:8px;left:8px;z-index:999;background:#fff;color:#000;padding:8px 16px;border-radius:8px;font-weight:600;text-decoration:none;">Skip to news</a>
+
+<!-- 
+     WEATHER SCENE
+-->
+<section id="scene" aria-label="Current weather conditions">
+
+  <!-- BG layers -->
+  <div id="scene-bg" aria-hidden="true"></div>
+  <video id="scene-video"
+    autoplay muted loop playsinline
+    aria-hidden="true"
+    preload="none">
+  </video>
+  
+  <div id="scene-overlay" aria-hidden="true"></div>
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+  <!-- Top bar -->
+  <header id="scene-header">
+    <span id="wordmark" aria-label="Atmosfera">Atmosfera</span>
+    <button id="unit-toggle" aria-label="Switch temperature unit" aria-pressed="false">°C / °F</button>
+  </header>
+
+  <!-- Loading -->
+  <div id="weather-loading" role="status" aria-live="polite" aria-label="Loading weather">
+    <div class="loader-ring" aria-hidden="true"></div>
+    <p class="loader-text">Reading the sky…</p>
+  </div>
+
+  <!-- Error -->
+  <div id="weather-error" role="alert" aria-live="assertive">
+    <span class="error-emoji" aria-hidden="true">🌫️</span>
+    <p class="error-msg" id="error-text">Unable to load weather.</p>
+    <button class="retry-btn" id="weather-retry">Try again</button>
+  </div>
+
+  <!-- Main weather content -->
+  <div id="weather-content" aria-live="polite">
+
+    <!-- Search -->
+    <div id="search-wrap" role="search" aria-label="Search for a city">
+      <svg class="search-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        id="city-input"
+        type="search"
+        placeholder="Search a city…"
+        aria-label="Enter city name and press Enter"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        enterkeyhint="search">
+      <button id="locate-btn" aria-label="Detect my location">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <line x1="12" y1="2"  x2="12" y2="6"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="6"  y2="12"/>
+          <line x1="18" y1="12" x2="22" y2="12"/>
+        </svg>
+        Locate me
+      </button>
+    </div>
+
+    <!-- City -->
+    <div id="city-wrap">
+      <h1 id="city-name">–</h1>
+      <p id="condition-label" aria-live="polite"></p>
+    </div>
+
+    <!-- Temperature -->
+    <div id="temp-hero">
+      <div id="weather-icon-wrap" role="img" aria-label="Weather icon" aria-live="polite"></div>
+      <div id="temp-block">
+        <span id="temp-display" aria-live="polite">–</span>
+        <span id="temp-unit">°C</span>
+      </div>
+    </div>
+
+    <!-- Detail pills -->
+    <div id="detail-row" role="group" aria-label="Weather details">
+      <div class="detail-pill">
+        <span class="pill-icon" aria-hidden="true">💧</span>
+        <span class="pill-label">Humidity</span>
+        <strong id="humidity-val" aria-label="Humidity">–</strong>
+      </div>
+      <div class="detail-pill">
+        <span class="pill-icon" aria-hidden="true">🌬️</span>
+        <span class="pill-label">Wind</span>
+        <strong id="wind-val" aria-label="Wind speed">–</strong>
+      </div>
+      <div class="detail-pill">
+        <span class="pill-icon" aria-hidden="true">👁️</span>
+        <span class="pill-label">Feels like</span>
+        <strong id="feels-val" aria-label="Feels like temperature">–</strong>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!--
+     NEWS SECTION
+-->
+<main id="news-section" aria-label="News feed">
+
+  <header id="news-header">
+    <p class="news-eyebrow">Around the world</p>
+    <div id="news-headline-row">
+      <h2 id="news-title">Today's Stories</h2>
+      <time id="news-clock" aria-label="Current time"></time>
+    </div>
+  </header>
+
+  <!-- Categories -->
+  <nav id="cat-scroll" aria-label="News categories">
+    <div id="cat-pills" role="tablist">
+      <button class="cat-pill active" role="tab" aria-selected="true"  data-cat="technology">
+        <span class="cat-pill-icon" aria-hidden="true">💻</span> Technology
+      </button>
+      <button class="cat-pill" role="tab" aria-selected="false" data-cat="sports">
+        <span class="cat-pill-icon" aria-hidden="true">⚽</span> Sports
+      </button>
+      <button class="cat-pill" role="tab" aria-selected="false" data-cat="business">
+        <span class="cat-pill-icon" aria-hidden="true">📈</span> Business
+      </button>
+      <button class="cat-pill" role="tab" aria-selected="false" data-cat="health">
+        <span class="cat-pill-icon" aria-hidden="true">🩺</span> Health
+      </button>
+      <button class="cat-pill" role="tab" aria-selected="false" data-cat="entertainment">
+        <span class="cat-pill-icon" aria-hidden="true">🎬</span> Entertainment
+      </button>
+    </div>
+  </nav>
+
+  <!-- Feed -->
+  <div id="news-feed" role="feed" aria-label="News articles" aria-busy="true"></div>
+
+  <!-- News error -->
+  <div id="news-error" role="alert" aria-live="polite">
+    <span class="news-err-icon" aria-hidden="true">📭</span>
+    <p class="news-err-msg" id="news-error-text">Couldn't load stories right now.</p>
+    <button class="retry-btn" id="news-retry">Try again</button>
+  </div>
+
+  <footer aria-label="Site footer">
+    <p class="footer-brand">Atmosfera</p>
+    <p class="footer-sub">Weather · News · Atmosphere</p>
+    <p class="footer-api">
+      Weather: OpenWeatherMap API &nbsp;·&nbsp; News: GNews API<br>
+      Replace API keys in the &lt;script&gt; to go live.
+    </p>
+  </footer>
+
+</main>
+
+
+<script src="./script.js"></script>
+
+</body>
+</html>
+
