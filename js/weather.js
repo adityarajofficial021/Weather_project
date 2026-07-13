@@ -245,13 +245,18 @@ if (locationBtn) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     const { latitude, longitude } = position.coords;
+                    
+                    // Cache the successful coordinates
+                    localStorage.setItem("user_lat", latitude);
+                    localStorage.setItem("user_lon", longitude);
+                    
                     await getWeatherByCoords(latitude, longitude);
                     await getForecastByCoords(latitude, longitude);
                     icon.className = originalClass;
                     locationBtn.disabled = false;
                 },
                 (error) => {
-                    alert("Location access denied or unavailable.");
+                    alert("Location access denied or unavailable. Please enable location permissions for this site in your browser settings.");
                     icon.className = originalClass;
                     locationBtn.disabled = false;
                     console.error(error);
@@ -269,20 +274,30 @@ if (locationBtn) {
 // =========================
 
 function initWeather() {
-    // 1. Immediately load default weather so the page is populated
-    getWeather("Bengaluru");
-    getForecast("Bengaluru");
+    const cachedLat = localStorage.getItem("user_lat");
+    const cachedLon = localStorage.getItem("user_lon");
 
-    // 2. Request geolocation in background to overwrite if permission is granted
+    // 1. Immediately load default weather (either cached location or Bengaluru fallback)
+    if (cachedLat && cachedLon) {
+        getWeatherByCoords(cachedLat, cachedLon);
+        getForecastByCoords(cachedLat, cachedLon);
+    } else {
+        getWeather("Bengaluru");
+        getForecast("Bengaluru");
+    }
+
+    // 2. Request fresh geolocation in background to overwrite and update cache
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
+                localStorage.setItem("user_lat", latitude);
+                localStorage.setItem("user_lon", longitude);
                 getWeatherByCoords(latitude, longitude);
                 getForecastByCoords(latitude, longitude);
             },
             (error) => {
-                console.log("Geolocation access denied or unavailable: ", error.message);
+                console.log("Background geolocation denied or failed: ", error.message);
             }
         );
     }
