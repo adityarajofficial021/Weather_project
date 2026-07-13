@@ -35,6 +35,41 @@ async function getForecast(city){
     displayForecast(data);
 }
 
+async function getWeatherByCoords(lat, lon) {
+    try {
+        const url = window.location.protocol.startsWith('http')
+            ? `/api/weather?lat=${lat}&lon=${lon}&mode=weather`
+            : `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Location not found");
+        }
+
+        const data = await response.json();
+        updateWeather(data);
+    }
+    catch (error) {
+        alert("Unable to fetch weather for your location.");
+        console.error(error);
+    }
+}
+
+async function getForecastByCoords(lat, lon) {
+    try {
+        const url = window.location.protocol.startsWith('http')
+            ? `/api/weather?lat=${lat}&lon=${lon}&mode=forecast`
+            : `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+        displayForecast(data);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 function displayForecast(data){
 
     const forecastContainer =
@@ -192,10 +227,70 @@ document.getElementById("cityInput").addEventListener("keydown", (event) => {
 });
 
 // =========================
-// Default Weather
+// Geolocation Detection
 // =========================
 
-getWeather("Bengaluru");
-getForecast("Bengaluru");
+const locationBtn = document.getElementById("locationBtn");
+
+if (locationBtn) {
+    locationBtn.addEventListener("click", () => {
+        if (navigator.geolocation) {
+            const icon = locationBtn.querySelector("i");
+            const originalClass = icon.className;
+            
+            // Set spinner loading state
+            icon.className = "fa-solid fa-spinner fa-spin";
+            locationBtn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    await getWeatherByCoords(latitude, longitude);
+                    await getForecastByCoords(latitude, longitude);
+                    icon.className = originalClass;
+                    locationBtn.disabled = false;
+                },
+                (error) => {
+                    alert("Location access denied or unavailable.");
+                    icon.className = originalClass;
+                    locationBtn.disabled = false;
+                    console.error(error);
+                },
+                { timeout: 8000 }
+            );
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    });
+}
+
+// =========================
+// Default Weather / Init
+// =========================
+
+function initWeather() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                getWeatherByCoords(latitude, longitude);
+                getForecastByCoords(latitude, longitude);
+            },
+            (error) => {
+                // Silent fallback to default city
+                console.log("Geolocation prompt denied or failed, falling back to default city.");
+                getWeather("Bengaluru");
+                getForecast("Bengaluru");
+            },
+            { timeout: 5000 }
+        );
+    } else {
+        getWeather("Bengaluru");
+        getForecast("Bengaluru");
+    }
+}
+
+// Run initialization
+initWeather();
 
 // Note: Dark/Light Mode is now managed by the shared js/theme.js script.

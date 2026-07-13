@@ -15,15 +15,21 @@ module.exports = async (req, res) => {
         return;
     }
 
-    const { city, mode } = req.query;
+    const { city, lat, lon, mode } = req.query;
 
-    if (!city) {
-        return res.status(400).json({ error: 'City parameter is required' });
+    if (!city && (!lat || !lon)) {
+        return res.status(400).json({ error: 'Either city or lat/lon parameters are required' });
     }
 
     const apiKey = process.env.WEATHER_API_KEY || "aab108fe8f290daf0565265f0b126d81";
     const endpoint = mode === 'forecast' ? 'forecast' : 'weather';
-    const url = `https://api.openweathermap.org/data/2.5/${endpoint}?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
+    
+    let url;
+    if (lat && lon) {
+        url = `https://api.openweathermap.org/data/2.5/${endpoint}?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+    } else {
+        url = `https://api.openweathermap.org/data/2.5/${endpoint}?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
+    }
 
     try {
         const apiResponse = await fetch(url);
