@@ -269,6 +269,11 @@ if (locationBtn) {
 // =========================
 
 function initWeather() {
+    // 1. Immediately load default weather so the page is populated
+    getWeather("Bengaluru");
+    getForecast("Bengaluru");
+
+    // 2. Request geolocation in background to overwrite if permission is granted
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -277,16 +282,9 @@ function initWeather() {
                 getForecastByCoords(latitude, longitude);
             },
             (error) => {
-                // Silent fallback to default city
-                console.log("Geolocation prompt denied or failed, falling back to default city.");
-                getWeather("Bengaluru");
-                getForecast("Bengaluru");
-            },
-            { timeout: 5000 }
+                console.log("Geolocation access denied or unavailable: ", error.message);
+            }
         );
-    } else {
-        getWeather("Bengaluru");
-        getForecast("Bengaluru");
     }
 }
 
