@@ -225,3 +225,157 @@ nav ul li a:hover{
     color:#d8d8d8;
 
 }
+/* ===========================
+   5 DAY FORECAST
+=========================== */
+
+.forecast-section{
+
+    margin-top:40px;
+
+}
+
+.forecast-section h2{
+
+    margin-bottom:20px;
+
+}
+
+.forecast-container{
+
+    display:flex;
+
+    gap:20px;
+
+    justify-content:space-between;
+
+    flex-wrap:wrap;
+
+}
+
+.forecast-card{
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:15px;
+
+    width:150px;
+
+    padding:20px;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+.forecast-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.forecast-card img{
+
+    width:70px;
+
+}
+
+.forecast-card h3{
+
+    margin:10px 0;
+
+}
+
+.forecast-card p{
+
+    margin:5px 0;
+
+}
+/* ===========================
+   THEME BUTTON
+=========================== */
+
+.theme-btn{
+
+    width:55px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    font-size:24px;
+
+    background:#45a5ff;
+
+    color:white;
+
+    transition:.3s;
+
+}
+
+.theme-btn:hover{
+
+    transform:scale(1.08);
+
+}
+
+/* ===========================
+   LIGHT MODE
+=========================== */
+
+body.light-mode{
+
+    background:#f2f6fc;
+
+    color:#222;
+
+}
+
+body.light-mode nav a{
+
+    color:#222;
+
+}
+
+body.light-mode .weather-card{
+
+    background:white;
+
+    color:#222;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+
+}
+
+body.light-mode .forecast-card{
+
+    background:white;
+
+    color:#222;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+
+}
+
+body.light-mode .search-box input{
+
+    background:white;
+
+    color:#222;
+
+    border:1px solid #ccc;
+
+}
+
+body.light-mode #date{
+
+    color:#555;
+
+}

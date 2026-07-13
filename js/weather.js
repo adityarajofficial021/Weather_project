@@ -32,6 +32,69 @@ async function getWeather(city) {
 
 }
 
+async function getForecast(city){
+
+    const response = await fetch(
+
+`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`
+
+    );
+
+    const data = await response.json();
+
+    displayForecast(data);
+
+}
+
+function displayForecast(data){
+
+    const forecastContainer =
+    document.getElementById("forecastContainer");
+
+    forecastContainer.innerHTML="";
+
+    const dailyForecast=[];
+
+    data.list.forEach(item=>{
+
+        if(item.dt_txt.includes("12:00:00")){
+
+            dailyForecast.push(item);
+
+        }
+
+    });
+
+    dailyForecast.slice(0,5).forEach(day=>{
+
+        const date=new Date(day.dt_txt);
+
+        const dayName=date.toLocaleDateString("en-US",{
+
+            weekday:"short"
+
+        });
+
+        forecastContainer.innerHTML+=`
+
+        <div class="forecast-card">
+
+            <h3>${dayName}</h3>
+
+            <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png">
+
+            <p>${Math.round(day.main.temp)}°C</p>
+
+            <p>${day.weather[0].main}</p>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
 // =========================
 // Update UI
 // =========================
@@ -70,7 +133,7 @@ function updateWeather(data) {
     document.getElementById("weatherIcon").src =
         `https://openweathermap.org/img/wn/${icon}@4x.png`;
 
-    updateDateTime();
+    updateDateTime(data.timezone);
 
 }
 
@@ -78,28 +141,32 @@ function updateWeather(data) {
 // Date & Time
 // =========================
 
-function updateDateTime() {
+function updateDateTime(timezoneOffset) {
 
-    const now = new Date();
+    const utc = new Date().getTime() + (new Date().getTimezoneOffset() * 60000);
+
+    const cityTime = new Date(utc + (timezoneOffset * 1000));
 
     const options = {
 
         weekday: "long",
 
-        year: "numeric",
+        day: "numeric",
 
         month: "long",
 
-        day: "numeric",
+        year: "numeric",
 
-        hour: "numeric",
+        hour: "2-digit",
 
-        minute: "2-digit"
+        minute: "2-digit",
+
+        hour12: true
 
     };
 
     document.getElementById("date").textContent =
-        now.toLocaleString("en-US", options);
+        cityTime.toLocaleString("en-US", options);
 
 }
 
@@ -115,6 +182,7 @@ document.getElementById("searchBtn").addEventListener("click", () => {
     if (city !== "") {
 
         getWeather(city);
+        getForecast(city);
 
     }
 
@@ -139,3 +207,41 @@ document.getElementById("cityInput").addEventListener("keydown", (event) => {
 // =========================
 
 getWeather("Bengaluru");
+getForecast("Bengaluru");
+
+// =========================
+// DARK/LIGHT MODE
+// =========================
+
+const themeToggle = document.getElementById("themeToggle");
+
+// Load saved theme
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+    themeToggle.textContent = "☀️";
+
+}
+
+themeToggle.addEventListener("click", ()=>{
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        themeToggle.textContent="☀️";
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        themeToggle.textContent="🌙";
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+});

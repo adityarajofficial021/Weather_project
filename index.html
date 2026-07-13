@@ -1,190 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Weather Dashboard</title>
 
     <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
 
-    <link rel="stylesheet" href="css/styles.css">
-</head>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
 
-<body>
-
+  <body>
     <div class="container">
+      <!-- ================= NAVBAR ================= -->
 
-        <!-- ================= NAVBAR ================= -->
+      <nav>
+        <div class="logo">Forecast</div>
 
-        <nav>
+        <ul>
+          <li class="active">
+            <a href="#">Weather</a>
+          </li>
 
-            <div class="logo">
-                Weather
-            </div>
+          <li>
+            <a href="newsApp/html/index.html">News</a>
+          </li>
+        </ul>
 
-            <ul>
+        <button id="themeToggle" class="theme-btn">🌙</button>
+      </nav>
 
-                <li class="active">
-                    <a href="#">Weather</a>
-                </li>
+      <!-- ================= SEARCH ================= -->
 
-                <li>
-                    <a href="newsApp/html/index.html">
-                        News
-                    </a>
-                </li>
+      <div class="search-box">
+        <input type="text" id="cityInput" placeholder="Search for a city..." />
 
-            </ul>
+        <button id="searchBtn">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
 
-        </nav>
+      <!-- ================= WEATHER CARD ================= -->
 
-        <!-- ================= SEARCH ================= -->
+      <div class="weather-card">
+        <div class="weather-top">
+          <div>
+            <h1 id="city">Bengaluru</h1>
 
-        <div class="search-box">
-
-            <input
-                type="text"
-                id="cityInput"
-                placeholder="Search for a city...">
-
-            <button id="searchBtn">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-
+            <p id="date">Loading...</p>
+          </div>
         </div>
 
-        <!-- ================= WEATHER CARD ================= -->
+        <div class="weather-main">
+          <div class="weather-icon">
+            <img
+              id="weatherIcon"
+              src="https://openweathermap.org/img/wn/01d@2x.png"
+              alt="Weather Icon"
+            />
+          </div>
 
-        <div class="weather-card">
+          <div class="temperature-section">
+            <h2 id="temperature">0°C</h2>
 
-            <div class="weather-top">
-
-                <div>
-
-                    <h1 id="city">
-                        Bengaluru
-                    </h1>
-
-                    <p id="date">
-                        Loading...
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="weather-main">
-
-                <div class="weather-icon">
-
-                    <img
-                        id="weatherIcon"
-                        src="https://openweathermap.org/img/wn/01d@2x.png"
-                        alt="Weather Icon">
-
-                </div>
-
-                <div class="temperature-section">
-
-                    <h2 id="temperature">
-                        0°C
-                    </h2>
-
-                    <p id="condition">
-                        Clear Sky
-                    </p>
-
-                </div>
-
-            </div>
-
-            <!-- Bottom Information -->
-
-            <div class="weather-info">
-
-                <div class="info-box">
-
-                    <i class="fa-solid fa-droplet"></i>
-
-                    <div>
-
-                        <span>Humidity</span>
-
-                        <h3 id="humidity">
-                            --
-                        </h3>
-
-                    </div>
-
-                </div>
-
-                <div class="info-box">
-
-                    <i class="fa-solid fa-wind"></i>
-
-                    <div>
-
-                        <span>Wind</span>
-
-                        <h3 id="wind">
-                            --
-                        </h3>
-
-                    </div>
-
-                </div>
-
-                <div class="info-box">
-
-                    <i class="fa-solid fa-gauge-high"></i>
-
-                    <div>
-
-                        <span>Pressure</span>
-
-                        <h3 id="pressure">
-                            --
-                        </h3>
-
-                    </div>
-
-                </div>
-
-                <div class="info-box">
-
-                    <i class="fa-solid fa-temperature-half"></i>
-
-                    <div>
-
-                        <span>Feels Like</span>
-
-                        <h3 id="feelsLike">
-                            --
-                        </h3>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+            <p id="condition">Clear Sky</p>
+          </div>
         </div>
 
+        <!-- Weather Information -->
+
+        <div class="weather-info">
+          <div class="info-box">
+            <i class="fa-solid fa-droplet"></i>
+
+            <div>
+              <span>Humidity</span>
+
+              <h3 id="humidity">--</h3>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <i class="fa-solid fa-wind"></i>
+
+            <div>
+              <span>Wind</span>
+
+              <h3 id="wind">--</h3>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <i class="fa-solid fa-gauge-high"></i>
+
+            <div>
+              <span>Pressure</span>
+
+              <h3 id="pressure">--</h3>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <i class="fa-solid fa-temperature-half"></i>
+
+            <div>
+              <span>Feels Like</span>
+
+              <h3 id="feelsLike">--</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 5-DAY FORECAST ================= -->
+
+      <div class="forecast-section">
+        <h2>5-Day Forecast</h2>
+
+        <div id="forecastContainer" class="forecast-container">
+          <!-- Forecast cards will be inserted here by JavaScript -->
+        </div>
+      </div>
     </div>
 
     <script src="js/weather.js"></script>
-
-</body>
-
+  </body>
 </html>
